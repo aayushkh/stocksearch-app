@@ -1,0 +1,160 @@
+html, body {
+	background-image: url("../Images/background.png");
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
+h2 {
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.form-container {
+	width: auto;
+	height: auto;
+	display: block;	
+	border-radius: 7px;
+	border: 2px solid white;
+	padding: 30px; 
+	background: #FFF;   
+	margin: 20px auto 0px auto;
+}
+
+.inner-container {
+	width: 96%;
+	margin: 25px auto 25px auto; 
+}
+
+#stocktickersymbol {
+	text-align: left;
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.heading-css {
+	height: auto;
+	overflow: hidden;
+	padding:10px;
+}
+
+.astrix {
+	color: #F00;
+}
+
+.display {
+	background: #FFF;
+	height: auto;
+	border-radius : 5px;
+	border:2px solid #F0F0F0;
+}
+
+.favourite-row-two {
+	padding: 30px 0px 0px 0px;
+	margin: 0;
+}
+
+.favourite-row-three {
+	padding: 0 10px 0 10px;
+	margin: 0;
+}
+
+.pad-element {
+	padding-top: 20px;
+}
+    
+#tableProgress {
+    margin-top: 180px;
+    margin-bottom: 180px;
+}
+    
+#priceProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+    
+#priceProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+
+#smaProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+    
+#emaProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+    
+#stochProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+    
+#rsiProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+    
+#adxProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+    
+#cciProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}
+    
+#bbandsProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}    
+    
+#macdProgress {
+    margin-top: 150px;
+    margin-bottom: 180px;
+}    
+
+#histProgress {
+    margin-top: 180px;
+    margin-bottom: 180px;
+}   
+
+#newsProgress {
+    margin-top: 180px;
+    margin-bottom: 180px;
+}   
+
+a {
+    color : #00F;
+    text-decoration: none;
+}
+
+.yellow {
+	color: #FFFF00;
+}
+    
+span.not-allowed {
+    cursor: not-allowed;
+}
+
+::ng-deep .mat-autocomplete-panel#md-autocomplete-0 {
+  border: 3px solid black !important;
+  border-radius: 10px;
+  background-color:green;
+
+}
+
+md-autocomplete button {
+    visibility: hidden;
+}
+
+md-autocomplete-wrap {
+    border-radius: 5px 5px; 
+    border : 1px solid #00F;  
+}

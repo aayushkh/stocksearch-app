@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Stock Search</title>
+    
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- ANGULAR CDN -->
+    <link rel = "stylesheet"
+     href = "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+    <link rel="stylesheet" type="text/css" href="https://material.angularjs.org/1.1.5/docs.css">
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+
+	<!-- JQUERY CDN -->
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+	<!-- BOOTSTRAP CDN -->
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>	
+
+	<!-- BOOTSTRAP TOGGLE CDN -->
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+	<!-- AJAX CDN -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<!-- MOMENTS CDN -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-utils.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.js"></script>
+
+	<!-- HIGHCHARTS CDN -->
+	<script src="https://code.highcharts.com/stock/highstock.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+    
+    <!-- CSS -->
+    <link href="./CSS/stylesheet.css" rel="stylesheet" type="text/css" >	
+
+</head>
+<body>
+
+<div class="container" ng-app = "firstApplication" ng-cloak>
+	<!-- FORM ELEMENT -->
+    <div class="form-container">
+
+        <h2>Stock Market Search</h2>
+        <div ng-controller = "autoCompleteController as ctrl" layout = "column" ng-cloak>
+        <md-content class = "md-padding">    
+
+    		<form id="searchForm" ng-submit="$event.preventDefault()" name="registerForm" class="form-horizontal" onsubmit='formHandler(0)' novalidate>
+    			<div class="row">
+    				<label for="stocktickersymbol" id="stocktickersymbol" class="col-lg-3 col-md-3 col-sm-12 col-xs-12 control-label">Enter Stock Ticker Symbol:<span class="astrix">*</span></label>
+
+    				<div class="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+                        <md-autocomplete
+                            required
+                            md-input-name="autocompleteField"
+                            ng-disabled = "ctrl.isDisabled"
+                            md-no-cache = "ctrl.noCache"
+                            md-selected-item = "ctrl.selectedItem"
+                            md-search-text-change = "ctrl.searchTextChange(ctrl.searchText)"
+                            md-search-text = "ctrl.searchText"
+                            md-selected-item-change = "ctrl.selectedItemChange(item)"
+                            md-items = "item in ctrl.querySearch(ctrl.searchText)"
+                            md-item-text = "item.display"
+                            md-require-match = true
+                            placeholder = "e.g. AAPL">
+                          
+                            <md-item-template>
+                                <span md-highlight-text = "ctrl.searchText"
+                                md-highlight-flags = "^i">{{item.display}}</span>
+                            </md-item-template>
+                        </md-autocomplete>   
+                        <br>
+                        <span class="alert hidden" style="margin: 0px 0px; padding: 0px 0px">
+                        	Please enter a Stock Ticker Symbol
+                        </span>                       
+    				</div>
+
+    				<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+    					<button type="submit" id="get-quote" class="btn btn-primary" disabled><span class="glyphicon glyphicon-search"></span>Get Quote</button>	
+    					<button type="reset" id="clear-quote" class="btn btn-default" onclick=""><span class="glyphicon glyphicon-refresh"></span>Clear</button>
+    				</div>
+    			</div>
+    		</form>
+        </md-content>
+    	</div>	
+    </div>
+
+	<!-- HORIZONTAL LINE -->
+	<div><hr></div>
+
+	<!-- DISPLAY -->
+	<div class="display">
+		<!-- CAROUSEL DISPLAY -->
+		<div class="carousel slide" id="carousel" data-interval="false">
+			<div class="carousel-inner">
+				<!-- FAVOURITE DISPLAY -->
+				<div id="fav-tab" class="item active">
+					<div class="inner-container panel panel-default">
+
+						<div class="heading-css panel-heading">
+							<p class="pull-left" style="padding-top: 5px;"><b>Favourite List</b></p>
+							<span class="pull-right">
+						`		<span class="hidden-xs">Automatic Refresh:           </span>
+								<input id="five-refresh" data-toggle="toggle" type="checkbox">
+								<button class="btn btn-default" onclick="refreshFavourites()">
+									<span class="glyphicon glyphicon-refresh"></span>
+								</button>
+								<span id="rmvcursor" style="cursor:not-allowed"><a id="rightslide" class="right-carousel-control btn disabled" href="#carousel" data-slide="next"><button class="btn btn-default" id="right-icon" disabled>
+									<span class="glyphicon glyphicon-chevron-right"></span>
+								</button></a>
+							     </span>
+                            </span>
+						</div>
+
+						<div class="favourite-row-two panel-body">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-md-1 control-label" for="sort-by">Sort By</label>
+									<div class="col-md-3">
+										<select class="form-control" id="sort-by">
+											<option>Default</option>
+											<option>Symbol</option>
+											<option>Price</option>
+											<option>Change</option>
+											<option>Change Percent</option>
+											<option>Volume</option>
+										</select>
+									</div>
+									<div class="col-md-8">
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label class="col-md-2 control-label" for="sort-by">Order</label>
+												<div class="col-md-4">
+												<select class="form-control" id="sort-order" disabled>
+													<option>Ascending</option>
+													<option>Descending</option>
+												</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>	
+						</div>
+
+						<div class="favourite-row-three panel-body">
+							<div class="table-responsive">
+								<table id="favourite-table" class="table table-striped">
+									<thead><tr></tr></thead>
+									<tbody id="tbody">
+									<tr class="active">
+										<td><b>Symbol</b></td>
+										<td><b>Stock Price</b></td>
+										<td><b>Change (Change Percent)</b></td>
+										<td><b>Volume</b></td>
+										<td></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- STOCK DISPLAY -->
+
+				<div id="stock-tab" class="item">
+					<div class="inner-container panel panel-default">
+						<div class="heading-css panel-heading">
+							<a class="left-carousel-control" href="#carousel" role="button" data-slide="prev"><button class="btn btn-default pull-left" id="left-icon" onclick="">
+								<span class="glyphicon glyphicon-chevron-left"></span>
+							</button></a>
+							<p style="padding-top: 5px;  text-align: center;"><b>Stock Details</b></p>
+						</div>
+						<div class="panel-body">
+							<div class="stock-buttons">
+								<ul class="nav nav-pills">
+
+									<li role="presentation" class="active"><a data-toggle="tab" href="#curr"><span class="glyphicon glyphicon-dashboard"></span><span class="hidden-xs"> Current</span> Stock</a></li>
+									
+									<li role="presentation"><a data-toggle="tab" href="#hist"><span class="glyphicon glyphicon-stats"></span><span class="hidden-xs"> Historical</span> Charts</a></li>
+									
+									<li role="presentation"><a data-toggle="tab" href="#news"><span class="glyphicon glyphicon-link"></span> News<span class="hidden-xs"> Feeds</span></a></li>
+
+								</ul>
+							</div>
+
+							<div><hr></div>
+
+							<div class="tab-content">
+								<div id="curr" class="tab-pane fade in active">
+									<div class="stock-details col-lg-6 col-md-6 col-sm-12">
+
+										<div class="row">
+											<span><b>Stock Details</b></span>
+									
+											<button onclick="facebookFeed()" class="btn btn-default pull-right disabled" style="width: 40px; height: 34px;" id="fb-btn"><img style="margin-top: -4px; margin-left: -5px;" src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" width="25px" height="25px"></button>
+
+											<button onclick="favStock()" id="button-star" class="btn btn-default pull-right disabled"><span id="star-btn" class="glyphicon glyphicon-star-empty"></span></button>
+										</div>
+
+										<div class="pad-element"></div>
+
+										<div class="row">
+										<div id="tableProgress" class="progress">
+											<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+										</div>
+										<table style="margin-top: 40px;" id="stockTable" class="table table-striped hidden">
+											<tr><th>Stock Ticker Symbol</th><td id="row1"></td></tr>
+											<tr><th>Last Price</th><td id="row2"></td></tr>
+											<tr><th>Change (Change Percent)</th><td id="row3"></td></tr>
+											<tr><th>Timestamp</th><td id="row4"></td></tr>
+											<tr><th>Open</th><td id="row5"></td></tr>
+											<tr><th>Close</th><td id="row6"></td></tr>
+											<tr><th>Day's Range</th><td id="row7"></td></tr>
+											<tr><th>Volume</th><td id="row8"></td></tr>
+										</table>
+										</div>
+                                        <div id="tableError" style="margin-top: 180px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+                                            Error ! Failed to get Price data. 
+                                        </div>
+									</div>
+
+									<div class="stock-highcharts col-lg-6 col-md-6 col-sm-12">
+										<ul id="activeX" class="nav nav-tabs" role="tablist">
+											<li role="presentation" class="active"><a role="tab" data-toggle="tab" href="#priceTab">Price</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#smaTab">SMA</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#emaTab">EMA</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#stochTab">STOCH</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#rsiTab">RSI</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#adxTab">ADX</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#cciTab">CCI</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#bbandsTab">BBANDS</a></li>
+											<li role="presentation"><a role="tab" data-toggle="tab" href="#macdTab">MACD</a></li>
+										</ul>
+										<div class="tab-content">
+											<div id="priceTab" role="tabpanel" class="tab-pane active">
+												<div  id="priceProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="price"></div>
+												<div id="priceError" style="margin-top: 180px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get Price data. 
+												</div>
+											</div>
+											<div id="smaTab" role="tabpanel" class="tab-pane">
+												<div  id="smaProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="sma"></div>
+												<div id="smaError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get SMA data. 
+												</div>
+											</div>
+											<div id="emaTab" role="tabpanel" class="tab-pane">
+												<div  id="emaProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="ema"></div>
+												<div id="emaError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get EMA data. 
+												</div>
+											</div>
+											<div id="stochTab" role="tabpanel" class="tab-pane">
+												<div  id="stochProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="stoch"></div>
+												<div id="stochError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get STOCH data. 
+												</div>
+											</div>
+											<div id="rsiTab" role="tabpanel" class="tab-pane">
+												<div  id="rsiProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="rsi"></div>
+												<div id="rsiError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get RSI data. 
+												</div>
+											</div>
+											<div id="adxTab" role="tabpanel" class="tab-pane">
+												<div  id="adxProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="adx"></div>
+												<div id="adxError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get ADX data. 
+												</div>
+											</div>
+											<div id="cciTab" role="tabpanel" class="tab-pane">
+												<div  id="cciProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="cci"></div>
+												<div id="cciError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get CCI data. 
+												</div>
+											</div>
+											<div id="bbandsTab" role="tabpanel" class="tab-pane">
+												<div  id="bbandsProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="bbands"></div>
+												<div id="bbandsError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get BBANDS data. 
+												</div>
+											</div>
+											<div id="macdTab" role="tabpanel" class="tab-pane">
+												<div  id="macdProgress" class="progress">
+													<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+												</div>
+												<div id="macd"></div>
+												<div id="macdError" style="margin-top: 150px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+												  	Error ! Failed to get MACD data. 
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div id="hist" class="tab-pane fade col-md-12 col-sm-12 col-xs-12 col lg-12">
+									<div  id="histProgress" class="progress">
+											<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+									</div>
+									<div id="history"></div>
+									<div id="histError" class="alert alert-danger hidden" role="alert">
+									  	Error ! Failed to get Historical Charts data. 
+									</div>
+								</div>
+
+								<div id="news" class="tab-pane fade">
+									<div  id="newsProgress" class="progress">
+											<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+									</div>
+									<div id="newsWells" class="hidden">
+										<div id="well0" class="well">
+										</div>
+
+										<div id="well1" class="well">
+										</div>
+
+										<div id="well2" class="well">
+										</div>
+
+										<div id="well3" class="well">
+										</div>
+
+										<div id="well4" class="well">
+										</div>
+									</div>
+									<div id="newsError" style="margin-top: 180px;margin-bottom: 180px;" class="alert alert-danger hidden" role="alert">
+									  	Error ! Failed to get News data. 
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div class="pad-element"></div>
+	<div class="pad-element"></div>
+</div>
+
+    <!-- SCRIPT Links -->
+    <script src="./JS/javascript.js"></script>
+    <script src="./JS/angular.js"></script>
+
+</body>
+</html>

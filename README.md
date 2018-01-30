@@ -1,5 +1,5 @@
-Server Side Scripting with NodeJS
-FrontEnd uses Bootstrap and AngularJS
+Server Side Scripting with NodeJS.
+FrontEnd uses Bootstrap and AngularJS.
 APIs used - AlphaVantage, SeekingAlpha, Highcharts
 
 Note :

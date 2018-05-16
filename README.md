@@ -5,8 +5,9 @@ APIs used - AlphaVantage, SeekingAlpha, Highcharts
 Note :
 To run the WebApp locally - 
 1. Clone the Repo 
-2. Use command : node server 
-3. App will be live at localhost:8080
+2. npm install
+3. run using : node server 
+4. App will be live at localhost:8080
 
 A demo of the App can be found here -
 https://youtu.be/HVUsVjiQaHs

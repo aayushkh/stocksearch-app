@@ -1,19 +1,22 @@
-Server Side Scripting with NodeJS.
-FrontEnd uses Bootstrap and AngularJS.
-APIs used - AlphaVantage, SeekingAlpha, Highcharts
+# Tech Stack
+
+- NodeJS
+- jQuery
+- Bootstrap
+- AngularJS
+- External APIs: AlphaVantage, SeekingAlpha, Highcharts
 
 Note :
 To run the WebApp locally - 
-1. Clone the Repo 
-2. npm install
-3. run using : node server 
-4. App will be live at localhost:8080
+- Clone
+- npm install
+- node server 
+- App will be live at localhost:8080
 
 A demo of the App can be found here -
 https://youtu.be/HVUsVjiQaHs
 
-I set up the NodeJS server over the Google Console Platform innitially. 
 
-HW Description attached for further details :D
+Please check the HW8_Description.pdf for further details regarding the assignment.
 
 Course - CSCI 571 : Web Technologies - Fall 2017

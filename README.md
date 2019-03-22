@@ -1,4 +1,4 @@
-# Tech Stack
+#### Tech Stack
 
 - NodeJS
 - jQuery
@@ -6,7 +6,7 @@
 - AngularJS
 - External APIs: AlphaVantage, SeekingAlpha, Highcharts
 
-### To run Stocksearch locally - 
+#### To run Stocksearch locally
 - Clone
 - npm install
 - node server 

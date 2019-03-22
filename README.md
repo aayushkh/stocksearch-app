@@ -6,8 +6,7 @@
 - AngularJS
 - External APIs: AlphaVantage, SeekingAlpha, Highcharts
 
-Note :
-To run the WebApp locally - 
+### To run Stocksearch locally - 
 - Clone
 - npm install
 - node server 
